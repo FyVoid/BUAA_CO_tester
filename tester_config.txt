@@ -4,6 +4,6 @@ ori $reg, $reg, $im | output
 lw $reg, $rega | output, prob:0.1f
 sw $reg, $rega | output, prob:0.2f
 beq $reg, $reg, $lb | prob:0.05f
-jal $lb | prob:0.05f
-jr $reg | output, prob:0.05f
+jal $lb | prob:0.02f
+jr $reg | output, prob:0.02f
 lui $reg, $im | output
