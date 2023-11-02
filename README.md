@@ -76,7 +76,7 @@ lui, $v0, 0x7c91         <=>     @00003034: $ 2 <= 7c910000
 
 整个测试逻辑图如下，各个组件可以分开使用
 
-![tester.drawio](/Users/fyvoid/src/CO/p4/CO_tester/asset/tester.drawio.png)
+![tester.drawio](./asset/tester.drawio.png)
 
 ## 高级功能
 
