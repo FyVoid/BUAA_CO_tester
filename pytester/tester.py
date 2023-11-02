@@ -9,6 +9,7 @@ class Tester:
     buffer = []
     gen_label_prob = 0.2
     former_addr_prob = 0.5
+    log_filename = 'tester_log.txt'
 
     def __init__(self, config_file: str):
         self.labels = []
@@ -62,7 +63,7 @@ class Tester:
         self.labels = []
         ra_saved = False
         for name in self.instruct_prob.keys():
-            instruct_extractor += [name] * (int)(self.instruct_prob[name] * 100)
+            instruct_extractor += [name] * (int)(self.instruct_prob[name] * 300)
         rd.shuffle(instruct_extractor)
         target_file = open(filename, 'w')
         i = 0
@@ -85,19 +86,26 @@ class Tester:
                     offset = pt.group(1)
                     base = pt.group(2)
                     if len(former_addr) > 0 and rd.random() > self.former_addr_prob:
-                        self.buffer.append(('ori $t0, $zero, {}'.format(rd.choice(former_addr)), True))
+                        self.buffer.append(('ori $t0, $zero, {}'.format(hex(int(rd.choice(former_addr)))), True))
                         i += 1
-                        instruct_str = instruct_str.replace(base, '$t0').replace(offset, '0')
+                        instruct_str = instruct_str.replace('(' + base + ')', '($t0)').replace(offset, '0')
                     else:
-                        self.buffer.append(('ori $t0, $zero, {}'.format(base), True))
+                        self.buffer.append(('ori $t0, $zero, {}'.format(hex(int(base))), True))
                         former_addr.append(int(offset) + int(base))
                         i += 1
-                        instruct_str = instruct_str.replace(base, '$t0')
+                        instruct_str = instruct_str.replace('(' + base + ')', '($t0)')
                 self.buffer.append((instruct_str, ist.has_output))
             i += 1
 
+        log_file = open(self.log_filename, 'w')
         for label in self.labels:
             self.buffer.insert(rd.randint(0, len(self.buffer)), (label + ':', False))
         target_file.write(".text\n")
+        addr = int(0x3000)
         for ist_str in self.buffer:
             target_file.write(ist_str[0] + '\n')
+            log_file.write(ist_str[0])
+            if not ist_str[0].startswith('label'):
+                log_file.write(' # {}'.format(hex(addr).replace('0x', '0000')))
+                addr += 4
+            log_file.write('\n')

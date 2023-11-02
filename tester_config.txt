@@ -1,0 +1,9 @@
+add $reg, $reg, $reg | output
+sub $reg, $reg, $reg | output
+ori $reg, $reg, $im | output
+lw $reg, $rega | output, prob:0.1f
+sw $reg, $rega | output, prob:0.2f
+beq $reg, $reg, $lb | prob:0.05f
+jal $lb | prob:0.05f
+jr $reg | output, prob:0.05f
+lui $reg, $im | output
