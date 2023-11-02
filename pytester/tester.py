@@ -109,3 +109,6 @@ class Tester:
                 log_file.write(' # {}'.format(hex(addr).replace('0x', '0000')))
                 addr += 4
             log_file.write('\n')
+
+        def gen_assembly_batch(self, dirname):
+            pass
