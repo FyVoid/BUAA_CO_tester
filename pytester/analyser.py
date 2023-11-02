@@ -40,7 +40,7 @@ class Analyser:
 
         output_file.write('END\n')
         if len(mismatch) <= 0:
-            output_file.write('All Correct Nya!')
+            output_file.write('All Correct Nya!\n')
         else:
             output_file.write('Mismatch!\n')
             for mis in mismatch:
@@ -50,4 +50,4 @@ class Analyser:
 
 
     def _log_err(self, file, mis):
-        file.write('error occurred at line {}, address {}, std out is {}, your output is {}'.format(mis[0], mis[1], mis[2], mis[3]))
+        file.write('error occurred at line {}, address {}, std out is {}, your output is {}\n'.format(mis[0], mis[1], mis[2], mis[3]))
