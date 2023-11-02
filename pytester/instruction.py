@@ -54,7 +54,7 @@ class Instruct:
             addr = int(get_legal_addr(), 16)
             offset = ((-1) ** rd.randint(1, 2)) * rd.randint(0, addr // 4) * 4
             base = addr - offset
-            while base > 4096 * 4:
+            while base > 1024 * 4:
                 offset = ((-1) ** rd.randint(1, 2)) * rd.randint(0, addr // 4) * 4
                 base = addr - offset
             return '{}({})'.format(offset, base)
@@ -63,4 +63,4 @@ class Instruct:
             return '${}{}'.format(start, rd.randint(0, self.types[var][start]))
 
 def get_legal_addr():
-    return hex(int(rd.randint(0, 4096)) * 4)
+    return hex(int(rd.randint(0, 1024)) * 4)
