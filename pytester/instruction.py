@@ -63,4 +63,4 @@ class Instruct:
             return '${}{}'.format(start, rd.randint(0, self.types[var][start]))
 
 def get_legal_addr():
-    return hex(int(rd.randint(0, 1024)) * 4)
+    return hex(int(rd.randint(0, 248)) * 4)
