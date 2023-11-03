@@ -93,6 +93,15 @@ All Correct Nya!
 
 ![tester.drawio](./asset/tester.drawio.png)
 
+## 批量测试
+> 愿意折腾的学生能学到更多  
+
+如果你去github上获取最新版，可以通过
+```
+sh batch_test.sh <batch_count>
+```
+进行批量测试，如果不指定batch_count，则会进行50次测试  
+测试的结果会被汇总到batch_log.txt文件下
 ## 高级功能
 
 事实上，你可以通过一定的修改来自定义汇编程序的生成，可以自定义的部分包括
@@ -157,6 +166,6 @@ total_instruct = 114		# 总的指令数量，由于$rega会产生ori，不是确
 
   * > https://github.com/Toby-Shi-cloud/Mars-with-BUAA-CO-extension
 
-* 很快会更新批量测试相关功能
+* github版本已经更新批量测试版本
 
 该自动化程序会继续更新适用新的课程要求
