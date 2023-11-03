@@ -15,7 +15,7 @@
 
 * iverilog
 * java（支持mars）
-* shell脚本支持
+* shell脚本支持(windows可以尝试使用git bash)
 
 如果要通过gtkwave查看波形，则需要安装gtkwave并支持控制台命令gtkwave
 
@@ -144,10 +144,14 @@ gen_label_prob = 0.2		# 产生新标签的概率
 former_addr_prob = 0.5	# 产生新地址的概率
 total_instruct = 114		# 总的指令数量，由于$rega会产生ori，不是确定数量(可能+1)
 ```
+### shell脚本命令行参数
+* nw: 不自动开启gtkwave
+* nl: log中不保存所有指令对应关系
+* ns: 命令行不输出log
+* dir \<dirname\>: 保存临时文件和log的目录
 
 ## 最后
 
-想了很久没有想到很好的验证verilog输出正确性的方法（在不存在已验证的cpu程序的情况下），如果有同学有好的想法欢迎讨论
 
 * 现在采用学长开发的魔改版MARS生成
 
