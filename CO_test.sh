@@ -2,6 +2,7 @@ SHOW_WAVE="true"
 SHOW_LOG="true"
 SAVE_LOG="true"
 RESULT_DIR="result"
+SHOW_FIRST="false"
 
 index=1
 for arg in $*
@@ -20,6 +21,9 @@ for arg in $*
         let index+=1
         eval j=\$$index
         RESULT_DIR=$j
+    elif [ $arg = "sf" ]
+        then
+        SHOW_FIRST="true"
     fi
     let index+=1
 done
@@ -32,7 +36,7 @@ sh assemble.sh ${RESULT_DIR}
 sh compile.sh ${RESULT_DIR}
 
 echo "pairing verilog output with assembly program"
-python analyse.py ${RESULT_DIR} ${SAVE_LOG}
+python analyse.py ${RESULT_DIR} "sl:${SAVE_LOG}" "sf:${SHOW_FIRST}"
 if [ $SHOW_LOG = "true" ]
     then
     echo "showing log"
