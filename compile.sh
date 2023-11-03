@@ -1,4 +1,6 @@
 echo "compile verilog with iverilog"
-find ../src -name "*.v" | xargs iverilog -o wave
+cp $1/code.txt ./code.txt
+find ../src -name "*.v" | xargs iverilog -o $1/wave
 echo "generate wave file"
-vvp -n wave -lxt2 > cpu_output.txt
+vvp -n $1/wave -lxt2 > $1/cpu_output.txt
+mv ./wave.vcd $1/wave.vcd

@@ -21,7 +21,7 @@ class Analyser:
                 line_count += 1
         std_file.close()
 
-    def analyse(self, filename, output_filename):
+    def analyse(self, filename, output_filename, save_log = True):
         cpu_output_file = open(filename, 'r')
         output_file = open(output_filename, 'w')
         line_count = 0
@@ -35,7 +35,8 @@ class Analyser:
                 std_out = '@{}: {} <= {}'.format(addr, self.std[line_count][1], self.std[line_count][2])
                 if cpu_out != std_out:
                     mismatch.append((line_count + 1, addr, cpu_out, std_out))
-                output_file.write('{}{}<=>    {}\n'.format(cpu_out, (34 - len(cpu_out)) * ' ', std_out))
+                if save_log:
+                    output_file.write('{}{}<=>    {}\n'.format(cpu_out, (34 - len(cpu_out)) * ' ', std_out))
                 line_count += 1
 
         output_file.write('END\n')

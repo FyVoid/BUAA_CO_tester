@@ -5,6 +5,7 @@ class Instruct:
     name = ""
     vars = []
     has_output = False
+    _max_legal_addr = 248
 
     types = {
         '$reg': {'t': 9, 's': 7, 'a': 3, 'v': 1},
@@ -51,10 +52,10 @@ class Instruct:
         elif start == 'lb':
             return "$label"
         elif start == 'rega':
-            addr = int(get_legal_addr(), 16)
+            addr = int(self.get_legal_addr(), 16)
             offset = ((-1) ** rd.randint(1, 2)) * rd.randint(0, addr // 4) * 4
             base = addr - offset
-            while base > 1024 * 4:
+            while base > self._max_legal_addr * 4:
                 offset = ((-1) ** rd.randint(1, 2)) * rd.randint(0, addr // 4) * 4
                 base = addr - offset
             return '{}({})'.format(offset, base)
@@ -62,5 +63,5 @@ class Instruct:
         else:
             return '${}{}'.format(start, rd.randint(0, self.types[var][start]))
 
-def get_legal_addr():
-    return hex(int(rd.randint(0, 248)) * 4)
+    def get_legal_addr(self):
+        return hex(int(rd.randint(0, self._max_legal_addr)) * 4)
