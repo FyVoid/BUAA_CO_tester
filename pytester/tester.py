@@ -69,7 +69,7 @@ class Tester:
         while i < total_instruct:
             name = rd.choice(instruct_extractor)
             ist = self.instructs[name]
-            if name == 'jalr':
+            if name == 'jal':
                 ra_saved = True
             if name == 'jr':
                 if not ra_saved:
