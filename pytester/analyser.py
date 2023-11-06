@@ -2,7 +2,8 @@ import re
 
 class Analyser:
     instructs = {}
-    std = {}
+    std = []
+    cpu_output = []
 
     def __init__(self, std_name):
         self.load_std(std_name)
@@ -12,48 +13,61 @@ class Analyser:
         std_file = open(filename, "r")
         line_count = 0
         for line in std_file:
-            if line_count >= 1000:
+            if line_count >= 256:
                 break
-            m = re.match(r'@([\w]{8}): ([\$*].+) <= ([\w]{8})', line)
+            m = re.match(r'@[\w]{8}: [\$*].+ <= [\w]{8}', line)
             if m:
-                addr = m.group(1)
-                self.std.append((addr, m.group(2), m.group(3)))
+                self.std.append(m.group(0))
                 line_count += 1
         std_file.close()
 
     def analyse(self, filename, output_filename, save_log = True, show_first = False):
-        cpu_output_file = open(filename, 'r')
         output_file = open(output_filename, 'w')
-        line_count = 0
-        mismatch = []
-        for line in cpu_output_file:
-            if line_count >= 1000:
-                break
-            if line.startswith('@'):
-                addr = re.search(r'@([\w]{8}):', line).group(1)
-                cpu_out = line[:-1]
-                std_out = '@{}: {} <= {}'.format(addr, self.std[line_count][1], self.std[line_count][2])
-                if cpu_out != std_out:
-                    mismatch.append((line_count + 1, addr, cpu_out, std_out))
-                    if show_first:
-                        break
-                if save_log:
-                    output_file.write('{}{}<=>    {}\n'.format(cpu_out, (34 - len(cpu_out)) * ' ', std_out))
-                line_count += 1
+        self.load_cpu_output(filename)
+        cpu_out_count = 0
+        flag = False
+        for std_out in self.std:
+            if len(self.cpu_output) <= cpu_out_count:
+                output_file.write('-{}\n'.format(std_out))
+                flag = True
+            else:
+                cpu_out = self.cpu_output[cpu_out_count]
+                if std_out != cpu_out:
+                    output_file.write('X{}: std\n'.format(std_out))
+                    output_file.write('X{}: yours\n '.format(cpu_out))
+                    for i, ch in enumerate(std_out):
+                        if ch != cpu_out[i]:
+                            output_file.write('^')
+                        else:
+                            output_file.write(' ')
+                    flag = True
+                else:
+                    output_file.write(' {}\n'.format(std_out))
+            cpu_out_count += 1
 
-        output_file.write('END\n')
-        if len(mismatch) <= 0:
-            output_file.write('All Correct Nya!\n')
-        else:
+        if len(self.cpu_output) > cpu_out_count:
+            flag = True
+            while cpu_out_count < len(self.cpu_output):
+                output_file.write('+{}\n'.format(self.cpu_output[cpu_out_count]))
+                cpu_out_count += 1
+
+        if flag:
             output_file.write('Mismatch!\n')
-            for mis in mismatch:
-                self._log_err(output_file, mis)
+        else:
+            output_file.write('All Correct Nya!\n')
         
         output_file.close()
 
-
-    def _log_err(self, file, mis):
-        file.write('error occurred at line {}, address {}, std out is {}, your output is {}\n'.format(mis[0], mis[1], mis[2], mis[3]))
+    def load_cpu_output(self, filename):
+        cpu_output_file = open(filename, 'r')
+        line_count = 0
+        for line in cpu_output_file:
+            if line_count >= 256:
+                break
+            m = re.match(r'@[\w]{8}: [\$*].+ <= [\w]{8}', line)
+            if m:
+                self.cpu_output.append(m.group(0))
+                line_count += 1
 
 class BatchAnalyser:
     batch_log = []
@@ -68,28 +82,22 @@ class BatchAnalyser:
     def analyse(self, batch_dirname, dirname, batch_count):
         for i in range(batch_count):
             log = open(batch_dirname + '/' + dirname + '-{}/'.format(i) + self.log_filename, 'r')
-            err_log = []
-            flag = False
+            flag = True
             for line in log:
-                if flag:
-                    if line.find('All Correct Nya!') >= 0:
-                        err_log = []
-                        break
-                    else:
-                        err_log.append(line)
-                if line.startswith("END"):
+                if line.find('All Correct Nya!') >= 0:
                     flag = True
-            self.batch_log.append(err_log)
+                    break
+                if line.find("Mismatch!") >= 0:
+                    flag = False
+                    break
             log.close()
+            self.batch_log.append(flag)
 
         output_file = open(self.output_filename, 'w')
-        for i, err_log in enumerate(self.batch_log):
+        for i, flag in enumerate(self.batch_log):
             output_file.write("result of batch {}: ".format(i))
-            if (len(err_log) > 0):
-                output_file.write('failed!\n')
-                for err in err_log:
-                    if err.find('Mismatch') < 0:
-                        output_file.write(err + '\n')
-            else:
+            if (flag):
                 output_file.write("AC Nya!\n")
+            else:
+                output_file.write('failed!\n')
         output_file.close()
