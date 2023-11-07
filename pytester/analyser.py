@@ -25,8 +25,11 @@ class Analyser:
         output_file = open(output_filename, 'w')
         self.load_cpu_output(filename)
         cpu_out_count = 0
+        tag = []
         flag = False
         for std_out in self.std:
+            # you should use a better comparision method
+            
             if len(self.cpu_output) <= cpu_out_count:
                 output_file.write('-{}\n'.format(std_out))
                 flag = True
@@ -35,12 +38,13 @@ class Analyser:
                 if std_out != cpu_out:
                     output_file.write('X{}: std\n'.format(std_out))
                     output_file.write('X{}: yours\n '.format(cpu_out))
-                    for i, ch in enumerate(std_out):
-                        if ch != cpu_out[i]:
+                    for i, ch in enumerate(cpu_out):
+                        if len(std_out) < i + 1 or ch != std_out[i]:
                             output_file.write('^')
                         else:
                             output_file.write(' ')
                     flag = True
+                    output_file.write('\n')
                 else:
                     output_file.write(' {}\n'.format(std_out))
             cpu_out_count += 1
