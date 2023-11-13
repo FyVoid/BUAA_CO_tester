@@ -3,6 +3,8 @@ SHOW_LOG="true"
 SAVE_LOG="true"
 RESULT_DIR="result"
 SHOW_FIRST="false"
+GENERATE_ASSEMBLY="true"
+DELAY_SLOT="false"
 
 index=1
 for arg in $*
@@ -24,14 +26,31 @@ for arg in $*
     elif [ $arg = "sf" ]
         then
         SHOW_FIRST="true"
+    elif [ $arg = "ng" ]
+        then
+        GENERATE_ASSEMBLY="false"
+    elif [ $arg = "ds" ]
+        then
+        DELAY_SLOT="true"
     fi
     let index+=1
 done
 
-echo "generate random assembly program"
-python generate.py ${RESULT_DIR}
+if [ $GENERATE_ASSEMBLY = "true" ]
+    then
+    echo "generate random assembly program"
+    python generate.py ${RESULT_DIR}
+else
+    cp assemble.asm ${RESULT_DIR}/assemble.asm
+fi
 
-sh assemble.sh ${RESULT_DIR}
+if [ $DELAY_SLOT = "true" ]
+    then
+    echo "assemble with delay slot enabled"
+    sh assemble.sh ${RESULT_DIR} ds
+else
+    sh assemble.sh ${RESULT_DIR}
+fi
 
 sh compile.sh ${RESULT_DIR}
 
