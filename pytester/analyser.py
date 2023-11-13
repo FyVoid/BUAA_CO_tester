@@ -1,4 +1,5 @@
 import re
+import difflib
 
 class Analyser:
     instructs = {}
@@ -24,36 +25,12 @@ class Analyser:
     def analyse(self, filename, output_filename, save_log = True, show_first = False):
         output_file = open(output_filename, 'w')
         self.load_cpu_output(filename)
-        cpu_out_count = 0
-        tag = []
+        diff = difflib.ndiff(self.cpu_output, self.std)
         flag = False
-        for std_out in self.std:
-            # you should use a better comparision method
-            
-            if len(self.cpu_output) <= cpu_out_count:
-                output_file.write('-{}\n'.format(std_out))
+        for diffline in list(diff):
+            if diffline.startswith('-') or diffline.startswith('+') or diffline.startswith('?'):
                 flag = True
-            else:
-                cpu_out = self.cpu_output[cpu_out_count]
-                if std_out != cpu_out:
-                    output_file.write('X{}: std\n'.format(std_out))
-                    output_file.write('X{}: yours\n '.format(cpu_out))
-                    for i, ch in enumerate(cpu_out):
-                        if len(std_out) < i + 1 or ch != std_out[i]:
-                            output_file.write('^')
-                        else:
-                            output_file.write(' ')
-                    flag = True
-                    output_file.write('\n')
-                else:
-                    output_file.write(' {}\n'.format(std_out))
-            cpu_out_count += 1
-
-        if len(self.cpu_output) > cpu_out_count:
-            flag = True
-            while cpu_out_count < len(self.cpu_output):
-                output_file.write('+{}\n'.format(self.cpu_output[cpu_out_count]))
-                cpu_out_count += 1
+            output_file.write(diffline + '\n')
 
         if flag:
             output_file.write('Mismatch!\n')
