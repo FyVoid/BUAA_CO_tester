@@ -157,7 +157,7 @@ class Tester:
                     instruct_str = instruct_str.replace('$label', labels[index])
                     block.insert(-1, instruct_str)
 
-                block.insert(0, labels[index])
+                block.insert(0, labels[index] + ':')
 
         target_file = open(filename, 'w')
         target_file.write('.text\n')
