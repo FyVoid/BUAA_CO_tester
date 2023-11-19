@@ -25,7 +25,7 @@ class Analyser:
     def analyse(self, filename, output_filename, save_log = True, show_first = False):
         output_file = open(output_filename, 'w')
         self.load_cpu_output(filename)
-        diff = difflib.ndiff(self.cpu_output, self.std)
+        diff = difflib.ndiff(self.std, self.cpu_output)
         flag = False
         for diffline in list(diff):
             if diffline.startswith('-') or diffline.startswith('+') or diffline.startswith('?'):

@@ -1,9 +1,9 @@
-add $reg, $reg, $reg | output
-sub $reg, $reg, $reg | output
-ori $reg, $reg, $im | output prob:0.1f
-lw $reg, $rega | output, prob:0.1f
-sw $reg, $rega | output, prob:0.1f
-beq $reg, $reg, $lb | prob:0.05f
-jal $lb | prob:0.05f
-jr $reg | output, prob:0.05f
-lui $reg, $im | output, prob:0.1f
+add $reg, $reg, $reg | prob:0.2f used_reg: 0.7f
+sub $reg, $reg, $reg | prob:0.2f used_reg: 0.7f
+ori $reg, $reg, $im | prob:0.2f used_reg: 0.7f
+lw $reg, $rega | prob:0.2f used_reg: 0.3f
+sw $reg, $rega | prob:0.2f used_reg: 0.7f
+beq $reg, $reg, $lb | prob:0.05f jump used_reg: 0.7f
+jal $lb | prob:0.05f jump
+jr $reg | output, prob:0.05f jump
+lui $reg, $im | output, prob:0.2f used_reg: 0.7f

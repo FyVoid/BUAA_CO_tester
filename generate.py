@@ -6,6 +6,7 @@ import os
 gen_label_prob = 0.2
 former_addr_prob = 0.5
 total_instruct = 114
+total_block = 20
 
 def main():
     dirname = ''
@@ -18,7 +19,7 @@ def main():
     tester = ts.Tester('tester_config.txt')
     tester.gen_label_prob = gen_label_prob
     tester.former_addr_prob = former_addr_prob
-    tester.gen_assembly(dirname + 'assemble.asm', total_instruct=total_instruct)
+    tester.gen_assembly(dirname + 'assemble.asm', total_block, total_instruct)
 
 if __name__ == '__main__':
     main()
