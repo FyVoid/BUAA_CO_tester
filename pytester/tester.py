@@ -107,12 +107,12 @@ class Tester:
 
                 # old address
                 if len(self.former_addr) > 0 and rd.random() > self.former_addr_prob:
-                    self.buffer.append(('ori $t0, $zero, {}'.format(hex(int(rd.choice(self.former_addr)))), True))
+                    buffer.append('ori $t0, $zero, {}'.format(hex(int(rd.choice(self.former_addr)))))
                     i += 1
                     instruct_str = instruct_str.replace('(' + base + ')', '($t0)').replace(offset, '0')
                 # new address
                 else:
-                    self.buffer.append(('ori $t0, $zero, {}'.format(hex(int(base))), True))
+                    buffer.append('ori $t0, $zero, {}'.format(hex(int(base))))
                     self.former_addr.append(int(offset) + int(base))
                     i += 1
                     instruct_str = instruct_str.replace('(' + base + ')', '($t0)')
@@ -154,7 +154,7 @@ class Tester:
                 if name == 'jr':
                     block.insert(-1, 'jr $ra')
                 else:
-                    instruct_str = instruct_str.replace('$label', labels[index])
+                    instruct_str = instruct_str.replace('$label', rd.choice(labels))
                     block.insert(-1, instruct_str)
 
                 block.insert(0, labels[index] + ':')

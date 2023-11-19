@@ -14,7 +14,7 @@ class Analyser:
         std_file = open(filename, "r")
         line_count = 0
         for line in std_file:
-            if line_count >= 256:
+            if line_count >= 300:
                 break
             m = re.match(r'@[\w]{8}: [\$*].+ <= [\w]{8}', line)
             if m:
@@ -43,11 +43,11 @@ class Analyser:
         cpu_output_file = open(filename, 'r')
         line_count = 0
         for line in cpu_output_file:
-            if line_count >= 256:
+            if line_count >= 300:
                 break
-            m = re.match(r'@[\w]{8}: [\$*].+ <= [\w]{8}', line)
+            m = re.match(r'.*(@[\w]{8}: [\$*].+ <= [\w]{8})', line)
             if m:
-                self.cpu_output.append(m.group(0))
+                self.cpu_output.append(m.group(1))
                 line_count += 1
 
 class BatchAnalyser:
