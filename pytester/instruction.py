@@ -1,7 +1,6 @@
 import re
 import random as rd
 
-
 class Instruct:
     name = ""
     vars = []
@@ -17,7 +16,8 @@ class Instruct:
         '$v': {'v': 1},
         '$im': {'im': 0},
         '$lb': {'lb': 0},
-        '$rega': {'rega': 0}
+        '$rega': {'rega': 0},
+        '$regaddr': {'regaddr': 0}
     }
 
     def __init__(self, name: str, vars: [str], jump=False, used_reg=0.0):
@@ -66,6 +66,15 @@ class Instruct:
             base = addr - offset
             while base > self._max_legal_addr * 4:
                 offset = rd.randint(0, addr // 4) * 4
+                base = addr - offset
+            return '{}({})'.format(offset, base)
+        
+        elif start == 'regaddr':
+            addr = int(self.get_legal_addr(), 16)
+            offset = rd.randint(0, addr)
+            base = addr - offset
+            while base > self._max_legal_addr * 4:
+                offset = rd.randint(0, addr)
                 base = addr - offset
             return '{}({})'.format(offset, base)
 
