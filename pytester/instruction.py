@@ -69,6 +69,15 @@ class Instruct:
                 base = addr - offset
             return '{}({})'.format(offset, base)
         
+        elif start == 'regh':
+            addr = int(self.get_legal_addr(), 16)
+            offset = rd.randint(0, addr // 2) * 2
+            base = addr - offset
+            while base > self._max_legal_addr * 4:
+                offset = rd.randint(0, addr // 2) * 2
+                base = addr - offset
+            return '{}({})'.format(offset, base)
+        
         elif start == 'regaddr':
             addr = int(self.get_legal_addr(), 16)
             offset = rd.randint(0, addr)
