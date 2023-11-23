@@ -5,8 +5,8 @@ import os
 
 gen_label_prob = 0.2
 former_addr_prob = 0.5
-total_instruct = 5
-total_block = 10
+total_instruct = 40
+total_block = 5
 
 def main():
     dirname = ''

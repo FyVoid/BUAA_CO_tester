@@ -117,6 +117,16 @@ class Tester:
                     i += 1
                     instruct_str = instruct_str.replace('(' + base + ')', '($t0)')
 
+            if re.search(r'\$nz', instruct_str):
+                pt = re.search(r'\$nz', instruct_str)
+
+                buffer.append('ori $t0, $zero, {}'. format(hex(rd.randint(1, 0xffff))))
+                buffer.append('lui $t1, {}'.format(hex(rd.randint(0, 0xffff))))
+                buffer.append('add $t0, $t0, $t1')
+                i += 3
+
+                instruct_str = instruct_str.replace('$nz', '$t0')
+                
             buffer.append(instruct_str)
             i += 1
 

@@ -15,9 +15,12 @@ class Instruct:
         '$a': {'a': 3},
         '$v': {'v': 1},
         '$im': {'im': 0},
+        '$im8': {'im8': 0},
         '$lb': {'lb': 0},
         '$rega': {'rega': 0},
-        '$regaddr': {'regaddr': 0}
+        '$regaddr': {'regaddr': 0},
+        '$regh': {'regh': 0},
+        '$regnz': {'regnz': 0}
     }
 
     def __init__(self, name: str, vars: [str], jump=False, used_reg=0.0):
@@ -41,10 +44,13 @@ class Instruct:
     def gen_instruct(self, used_regs=[]):
         ret = ''
         ret += self.name
-        for var in self.vars:
+        for index, var in enumerate(self.vars):
             variable = self._rand_var(var, used_regs)
             if variable:
-                ret += ', ' + variable
+                if index == 0:
+                    ret += ' ' + variable
+                else:
+                    ret += ', ' + variable
             else:
                 return None
         return ret
@@ -56,6 +62,9 @@ class Instruct:
 
         if start == 'im':
             return hex(rd.randint(0, 0xffff))
+        
+        if start == 'im8':
+            return '-' * rd.randint(0, 1) + hex(rd.randint(0, 0xfe))
 
         elif start == 'lb':
             return "$label"
@@ -86,6 +95,9 @@ class Instruct:
                 offset = rd.randint(0, addr)
                 base = addr - offset
             return '{}({})'.format(offset, base)
+        
+        elif start == 'regnz':
+            return '$nz'
 
         else:
             if used and len(used_regs) > 0:
