@@ -70,31 +70,31 @@ class Instruct:
             return "$label"
 
         elif start == 'rega':
-            addr = int(self.get_legal_addr(), 16)
+            addr = int(self.get_legal_addr(4), 16)
             offset = rd.randint(0, addr // 4) * 4
             base = addr - offset
             while base > self._max_legal_addr * 4:
                 offset = rd.randint(0, addr // 4) * 4
                 base = addr - offset
-            return '{}({})'.format(offset, base)
+            return '$w{}({})'.format(offset, base)
         
         elif start == 'regh':
-            addr = int(self.get_legal_addr(), 16)
+            addr = int(self.get_legal_addr(2), 16)
             offset = rd.randint(0, addr // 2) * 2
             base = addr - offset
             while base > self._max_legal_addr * 4:
                 offset = rd.randint(0, addr // 2) * 2
                 base = addr - offset
-            return '{}({})'.format(offset, base)
+            return '$h{}({})'.format(offset, base)
         
         elif start == 'regaddr':
-            addr = int(self.get_legal_addr(), 16)
+            addr = int(self.get_legal_addr(1), 16)
             offset = rd.randint(0, addr)
             base = addr - offset
             while base > self._max_legal_addr * 4:
                 offset = rd.randint(0, addr)
                 base = addr - offset
-            return '{}({})'.format(offset, base)
+            return '$b{}({})'.format(offset, base)
         
         elif start == 'regnz':
             return '$nz'
@@ -108,5 +108,5 @@ class Instruct:
                     used_regs.append(ret)
                 return ret
 
-    def get_legal_addr(self):
-        return hex(int(rd.randint(0, self._max_legal_addr)) * 4)
+    def get_legal_addr(self, times):
+        return hex(int(rd.randint(0, self._max_legal_addr)) * times)

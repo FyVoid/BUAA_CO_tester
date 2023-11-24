@@ -9,7 +9,7 @@ class Tester:
     instruct_prob = {}
     jump_instruct_prob = {}
     blocks = []
-    former_addr = []
+    former_addr = {}
     used_regs = []
     gen_label_prob = 0.2
     former_addr_prob = 0.5
@@ -17,6 +17,31 @@ class Tester:
     def __init__(self, config_file: str):
         self.labels = []
         self.load_config(config_file)
+
+    def _fill_start(self):
+        buffer = []
+        # dict = {'t': 9, 's': 7, 'a': 3, 'v': 1}
+        for i in range(10):
+            if (rd.randint(0, 1) == 0):
+                buffer.append('ori $t{}, $zero, {}'.format(i, hex(rd.randint(0, 0xffff))))
+            else:
+                buffer.append('lui $t{}, {}'.format(i, hex(rd.randint(0, 0xffff))))
+        for i in range(8):
+            if (rd.randint(0, 1) == 0):
+                buffer.append('ori $s{}, $zero, {}'.format(i, hex(rd.randint(0, 0xffff))))
+            else:
+                buffer.append('lui $s{}, {}'.format(i, hex(rd.randint(0, 0xffff))))
+        for i in range(4):
+            if (rd.randint(0, 1) == 0):
+                buffer.append('ori $a{}, $zero, {}'.format(i, hex(rd.randint(0, 0xffff))))
+            else:
+                buffer.append('lui $a{}, {}'.format(i, hex(rd.randint(0, 0xffff))))
+        for i in range(2):
+            if (rd.randint(0, 1) == 0):
+                buffer.append('ori $v{}, $zero, {}'.format(i, hex(rd.randint(0, 0xffff))))
+            else:
+                buffer.append('lui $v{}, {}'.format(i, hex(rd.randint(0, 0xffff))))
+        self.blocks.insert(0, buffer)
 
     def load_config(self, config_file: str):
         self.instructs = {}
@@ -100,21 +125,24 @@ class Tester:
 
             instruct_str = ist.gen_instruct(self.used_regs)
 
-            if re.search(r'-*\d+\(-*\d+\)', instruct_str):
-                pt = re.search(r'(-*\d+)\((-*\d+)\)', instruct_str)
-                offset = pt.group(1)
-                base = pt.group(2)
+            if re.search(r'\$[whb]-*\d+\(-*\d+\)', instruct_str):
+                pt = re.search(r'\$([whb])(-*\d+)\((-*\d+)\)', instruct_str)
+                type = pt.group(1)
+                offset = pt.group(2)
+                base = pt.group(3)
 
                 # old address
-                if len(self.former_addr) > 0 and rd.random() > self.former_addr_prob:
-                    buffer.append('ori $t0, $zero, {}'.format(hex(int(rd.choice(self.former_addr)))))
+                if len(self.former_addr[type]) > 0 and rd.random() > self.former_addr_prob:
+                    buffer.append('ori $t0, $zero, {}'.format(hex(int(rd.choice(self.former_addr[type])))))
                     i += 1
+                    instruct_str = instruct_str.replace('$' + type, '')
                     instruct_str = instruct_str.replace('(' + base + ')', '($t0)').replace(offset, '0')
                 # new address
                 else:
                     buffer.append('ori $t0, $zero, {}'.format(hex(int(base))))
-                    self.former_addr.append(int(offset) + int(base))
+                    self.former_addr[type].append(int(offset) + int(base))
                     i += 1
+                    instruct_str = instruct_str.replace('$' + type, '')
                     instruct_str = instruct_str.replace('(' + base + ')', '($t0)')
 
             if re.search(r'\$nz', instruct_str):
@@ -138,7 +166,7 @@ class Tester:
             instruct_extractor += [name] * (int)(self.instruct_prob[name] * 300)
         rd.shuffle(instruct_extractor)
 
-        self.former_addr = []
+        self.former_addr = {'w': [], 'h': [], 'b': []}
         self.used_regs = []
         self.blocks = []
         labels = []
@@ -168,6 +196,8 @@ class Tester:
                     block.insert(-1, instruct_str)
 
                 block.insert(0, labels[index] + ':')
+
+        self._fill_start()
 
         target_file = open(filename, 'w')
         target_file.write('.text\n')
