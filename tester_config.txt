@@ -1,26 +1,28 @@
 add $reg, $reg, $reg | prob:0.1f used_reg: 0.7f
 sub $reg, $reg, $reg | prob:0.1f used_reg: 0.7f
-ori $reg, $reg, $im | prob:0.1f used_reg: 0.7f
+ori $reg, $reg, $im | prob:0.1f used_reg: 0.2f
 lw $reg, $rega | prob:0.1f used_reg: 0.3f
 sw $reg, $rega | prob:0.1f used_reg: 0.7f
-beq $reg, $reg, $lb | prob:0.4f jump used_reg: 0.7f
-jal $lb | prob:0.5f jump
-jr $reg | output, prob:0.1f jump
-lui $reg, $im | prob:0.1f used_reg: 0.7f
-slt $reg, $reg, $reg | prob:0.1f used_reg: 0.7f
-sltu $reg, $reg, $reg | prob:0.1f used_reg: 0.7f
-addi $reg, $reg, $im8 | prob:0.1f used_reg: 0.7f
-andi $reg, $reg, $im | prob:0.1f used_reg: 0.7f
+beq $reg, $reg, $lb | prob:0.0f jump used_reg: 0.7f
+jal $lb | prob:0.0f jump
+jr $reg | output, prob:0.0f jump
+lui $reg, $im | prob:0.1f used_reg: 0.2f
+slt $reg, $reg, $reg | prob:0.0f used_reg: 0.7f
+sltu $reg, $reg, $reg | prob:0.0f used_reg: 0.7f
+addi $reg, $reg, $im8 | prob:0.0f used_reg: 0.2f
+andi $reg, $reg, $im | prob:0.0f used_reg: 0.2f
 lb $reg, $regaddr | prob:0.1f used_reg: 0.7f
 lh $reg, $regh | prob:0.1f used_reg: 0.7f
-sb $reg, $regaddr | prob:0.1f used_reg: 0.7f
-sh $reg, $regh | prob:0.1f used_reg: 0.7f
-mult $reg, $reg | prob:0.1f used_reg: 0.7f
-multu $reg, $reg | prob:0.1f used_reg: 0.7f
-div $reg, $regnz | prob:0.1f used_reg: 0.7f
-divu $reg, $regnz | prob:0.1f used_reg: 0.7f
-mfhi $reg | prob: 0.1f used_reg: 0.3f
-mflo $reg | prob: 0.1f used_reg: 0.3f
-mthi $reg | prob: 0.1f used_reg: 0.7f
-mtlo $reg | prob: 0.1f used_reg: 0.7f
+sb $reg, $regaddr | prob:0.5f used_reg: 0.5f
+sh $reg, $regh | prob:0.5f used_reg: 0.5f
+mult $reg, $reg | prob:0.0f used_reg: 0.7f
+multu $reg, $reg | prob:0.0f used_reg: 0.7f
+div $reg, $regnz | prob:0.0f used_reg: 0.7f
+divu $reg, $regnz | prob:0.0f used_reg: 0.7f
+mfhi $reg | prob: 0.0f used_reg: 0.3f
+mflo $reg | prob: 0.0f used_reg: 0.3f
+mthi $reg | prob: 0.0f used_reg: 0.7f
+mtlo $reg | prob: 0.0f used_reg: 0.7f
 bne $reg, $reg, $lb | prob:0.4f jump used_reg: 0.7f
+add $reg, $reg, $reg | prob:0.0f used_reg: 0.7f
+or $reg, $reg, $reg | prob:0.0f used_reg: 0.7f
